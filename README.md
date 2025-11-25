@@ -17,3 +17,5 @@
 
 หลังจากการอัพเดททำให้ง่ายต่อการเพิ่มส่วนเสริมหรือระบบถ้าเป็น command pattern ก็สามารถได้เช่น event pattern 
 หรือในส่วนของ state pattern ก็สามารถทำพวก player state (OnVenom OnBurn OnFreeze)
+และหลังอัพเดททำให้บาง script กิน performance ของเครื่องน้อยลงอย่างเช่น Scoremanager ที่เรียกตรวจ score
+ใน Update() ตลอดเวลา ก็เปลี่ยนมาเรียกแค่เฉพาะตอนที่แต้มถึงอย่างเดียว

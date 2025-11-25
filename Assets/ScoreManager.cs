@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// The Invoker
-// This triggers commands based on events (score changes)
+
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager instance;
@@ -35,19 +34,29 @@ public class ScoreManager : MonoBehaviour
    
     void InitializeCommands()
     {
-
         UnlockNewSkill skillReceiver = UnlockNewSkill.instance;
+        UnlockLevelAndSkill levelSystem = UnlockLevelAndSkill.instance; // The State Context
+        SpawnerManager spawnerSystem = SpawnerManager.instance;
 
-       
         _scoreCommands.Add(10, new UnlockSkillCommand(skillReceiver, 1));
 
 
         _scoreCommands.Add(30, new UnlockSkillCommand(skillReceiver, 2));
 
-       
+
         _scoreCommands.Add(50, new UnlockSkillCommand(skillReceiver, 3));
 
-    
+        
+        CompositeCommand event100 = new CompositeCommand();
+        event100.AddCommand(new LevelUpCommand(levelSystem));      
+        event100.AddCommand(new SpawnerCommand(spawnerSystem, 1)); 
+        _scoreCommands.Add(100, event100);
+
+        
+        CompositeCommand event200 = new CompositeCommand();
+        event200.AddCommand(new LevelUpCommand(levelSystem));      
+        event200.AddCommand(new SpawnerCommand(spawnerSystem, 2));
+        _scoreCommands.Add(200, event200);
     }
 
 

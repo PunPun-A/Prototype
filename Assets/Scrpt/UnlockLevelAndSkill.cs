@@ -1,33 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-
 
 public class UnlockLevelAndSkill : MonoBehaviour
 {
     public static UnlockLevelAndSkill instance;
-    
+
+    [Header("Level 1 Objects")]
     public GameObject Col;
-    public GameObject Col2;
     public GameObject Sign1;
+
+    [Header("Level 2 Objects")]
+    public GameObject Col2;
     public GameObject Sign2;
-    
+
+
+    private ILevelState _currentState;
+
     void Awake()
     {
         instance = this;
+        _currentState = new Level1State();
     }
 
-    public void UnlockNewLvl()
+
+    public void SetState(ILevelState newState)
     {
-        Col.SetActive(false);
-        Sign1.SetActive(true);
+        _currentState = newState;
     }
-    public void UnlockNewLvl2()
+
+
+    public void LevelUp()
     {
-        Col2.SetActive(false);
-        Sign2.SetActive(true);
+        _currentState.HandleLevelUp(this);
     }
-
-
 }

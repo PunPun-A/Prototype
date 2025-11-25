@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 public class UnlockNewSkill : MonoBehaviour
 {
     public static UnlockNewSkill instance;
-    
-    
+
+    [Header("Skill 1")]
     public GameObject Skill;
-    public GameObject Skill2;
-    public GameObject Skill3;
     public GameObject LockSkill;
+
+    [Header("Skill 2")]
+    public GameObject Skill2;
     public GameObject LockSkill2;
+
+    [Header("Skill 3")]
+    public GameObject Skill3;
     public GameObject LockSkill3;
 
     void Awake()
@@ -21,19 +24,43 @@ public class UnlockNewSkill : MonoBehaviour
         instance = this;
     }
 
-    public void UnlockSkill()
+ 
+    public void UnlockSpecificSkill(int id)
     {
-        Skill.SetActive(true);
-        LockSkill.SetActive(false);
+        switch (id)
+        {
+            case 1:
+                UnlockSkill1();
+                break;
+            case 2:
+                UnlockSkill2();
+                break;
+            case 3:
+                UnlockSkill3();
+                break;
+            default:
+                Debug.LogWarning("Skill ID not found: " + id);
+                break;
+        }
     }
-    public void UnlockSkill2()
+
+    
+    private void UnlockSkill1()
     {
-        Skill2.SetActive(true);
-        LockSkill2.SetActive(false);
+        Debug.Log("Command Executed: Unlocking Skill 1");
+        if (Skill) Skill.SetActive(true);
+        if (LockSkill) LockSkill.SetActive(false);
     }
-    public void UnlockSkill3()
+    private void UnlockSkill2()
     {
-        Skill3.SetActive(true);
-        LockSkill3.SetActive(false);
+        Debug.Log("Command Executed: Unlocking Skill 2");
+        if (Skill2) Skill2.SetActive(true);
+        if (LockSkill2) LockSkill2.SetActive(false);
+    }
+    private void UnlockSkill3()
+    {
+        Debug.Log("Command Executed: Unlocking Skill 3");
+        if (Skill3) Skill3.SetActive(true);
+        if (LockSkill3) LockSkill3.SetActive(false);
     }
 }

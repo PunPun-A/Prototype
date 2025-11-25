@@ -3,73 +3,100 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// The Invoker
+// This triggers commands based on events (score changes)
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager instance;
 
     public Text scoreText;
-    public Text highScore;
-    
+    public Text highScoreText; 
 
     public int score;
     int highscore;
 
+  
+    private Dictionary<int, ICommand> _scoreCommands;
+
     void Awake()
     {
         instance = this;
+        _scoreCommands = new Dictionary<int, ICommand>();
     }
+
     void Start()
     {
         highscore = PlayerPrefs.GetInt("highscore", 0);
-        scoreText.text = score.ToString() + " POINTS";
-        highScore.text = "HIGHSCORE:" + highscore.ToString();
+        UpdateUI();
+
+        InitializeCommands();
     }
 
-    void Update()
+   
+    void InitializeCommands()
     {
-        if(score >= 10)
-        {
-            UnlockNewSkill.instance.UnlockSkill();
-        }
-        if(score >= 30)
-        {
-            UnlockNewSkill.instance.UnlockSkill2();
-        }
-        if (score >= 50)
-        {
-            UnlockNewSkill.instance.UnlockSkill3();
-        }
-        if (score >= 100)
-        {
-            UnlockLevelAndSkill.instance.UnlockNewLvl();
-            SpawnerManager.instance.SpawnerChange();
-        }
-        if (score >= 200)
-        {
-            UnlockLevelAndSkill.instance.UnlockNewLvl2();
-            SpawnerManager.instance.SpawnerChange2();
-        }
+
+        UnlockNewSkill skillReceiver = UnlockNewSkill.instance;
+
+       
+        _scoreCommands.Add(10, new UnlockSkillCommand(skillReceiver, 1));
+
+
+        _scoreCommands.Add(30, new UnlockSkillCommand(skillReceiver, 2));
+
+       
+        _scoreCommands.Add(50, new UnlockSkillCommand(skillReceiver, 3));
+
+    
     }
+
+
 
     public void AddPoint()
     {
         score += 1;
-        scoreText.text = score.ToString() + " POINTS";
-        if(highscore <= score)
-        {
-            PlayerPrefs.SetInt("highscore", score);
-        }
+        UpdateUI();
+        CheckHighscore();
+
+        
+        CheckCommands(score);
     }
+
     public void AddRevivePoint()
     {
+      
+
         score += 50;
-        scoreText.text = score.ToString() + " POINTS";
-        if (highscore <= score)
+        UpdateUI();
+        CheckHighscore();
+
+        CheckCommands(score);
+    }
+
+    private void CheckCommands(int currentScore)
+    {
+ 
+        if (_scoreCommands.ContainsKey(currentScore))
         {
-            PlayerPrefs.SetInt("highscore", score);
+            _scoreCommands[currentScore].Execute();
         }
     }
 
-    
-    
+    private void UpdateUI()
+    {
+        if (scoreText != null)
+            scoreText.text = score.ToString() + " POINTS";
+
+        if (highScoreText != null)
+            highScoreText.text = "HIGHSCORE:" + highscore.ToString();
+    }
+
+    private void CheckHighscore()
+    {
+        if (highscore <= score)
+        {
+            highscore = score; 
+            PlayerPrefs.SetInt("highscore", score);
+        }
+    }
 }
